@@ -3,7 +3,8 @@ var ReactDom = require('react-dom');
 
 // initialized the varriable
 // array
-//命名規則を第三者がわかるもの
+// 命名規則を第三者がわかるもの
+// 変数名を宣言するのはStateの中
 var _tmpValue = []; //溜め込んでる場所という意味にする（_tmpValue）
 // initialized the varriable
 // this is number of sum. :]
@@ -14,7 +15,7 @@ var KeySample = React.createClass({
   getInitialState() {
     return {
       buttons: [1, 2, 3, "+",4, 5, 6,"-", 7, 8, 9, "*", 0, "C",  "/", "="],
-      text: ['1', '+', '1'].join('')
+      text: [].join('')
     };
   },
   onClick(value) {
@@ -24,35 +25,35 @@ var KeySample = React.createClass({
     // save the data which pressed the button
     if (value == '='){
 
-      console.log('whats value ' + value);
+      //console.log('whats value ' + value);
       this.calculate(); //計算してるところを呼ぶ
 
     } else if (value == 'C') { // reset the array, cause pressed equa;l or 'C'
 
       ecalculate = []; //空にする
-      _tmpValue = [];
+      _tmpValue = []; //表示されてる部分も空にする
 
     } else {
 
-      _tmpValue.push(value);
+      _tmpValue.push(value); //inputの中にクリックされた値を送る
+
+      this.setState({
+        text: _tmpValue.join('') //記号の場合そのままtextに追加
+      });
 
       //console.log('push ' + value);
     }
-
-    this.setState({
-      text: _tmpValue.join('')
-    });
     //console.log(this.state.text);
     //console.log(event.target);
   },
-  calculate() { //計算するところ
+  calculate() { //計算するところ↓
   
     var flag;
 
     var str = _tmpValue.join("");//_tmpValue文字列かした値が入ってる（str）
     //配列＋メソット＋引数
 
-    var array = str.split(/(\+|\-|\*|\/)/);
+    var array = str.split(/(\+|\-|\*|\/)/); //
 
     for (var v of array) {
       //console.log('v is ' + v);
@@ -76,7 +77,6 @@ var KeySample = React.createClass({
         // this could be number :) yeah!!! 
         // wanna Magic Number!!!! :)
         // console.log('Magic Number is ' + v);
-        datas = v;
 
         num = array[0] * 1;
         sum = array[2] * 1;
@@ -90,8 +90,8 @@ var KeySample = React.createClass({
       }
     }// end of for!!!!
 
-    console.log('whats else num ' + num);
-    console.log('whats else sum ' + sum);
+    //console.log('whats else num ' + num);
+    //console.log('whats else sum ' + sum);
 
     // let's sum
     // 3+6=9 -> this is wrong!!!!!!!!
@@ -114,22 +114,23 @@ var KeySample = React.createClass({
     else if(flag == '/') {
       sum = num / sum;
     }
-    else {
+
+    /*else {
       aclear(_tmpValue);// <- this is ERROR!!!!!!!!
       console.log('whats else ' + sum);
-    }
+    }*/
 
     console.log('sum', sum);
 
     // if sum is 8
     // _tmpValue = [8]
-    _tmpValue = [sum];
+    _tmpValue = []; //数字を押されたら空にする
     this.setState({
-      text: _tmpValue.join('')
+      text: sum // 計算結果を表示　
     });
-    
-  },
 
+
+  },
   render() {
     var _this = this;
 
@@ -155,9 +156,5 @@ ReactDom.render(<KeySample />, document.getElementById("calculator_wrap"));
 
 
 
-//component.setProps({ name: "foo" });      // <div>1:foo</div>
-//component.replaceProps({ name: "hoge" }); // <div>:hoge</div>
 
-//ReactDom.render(React.createFactory(Counter)({count: "1"}), document.body);
-//ReactDom.render(<Counter {count} />, document.getElementById("app"));
 
