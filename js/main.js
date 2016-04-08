@@ -23,14 +23,20 @@ var KeySample = React.createClass({
 
     // save the data which pressed the button
     if (value == '='){
-      //console.log('whats value ' + value);
-      this.calculate();
+
+      console.log('whats value ' + value);
+      this.calculate(); //計算してるところを呼ぶ
+
     } else if (value == 'C') { // reset the array, cause pressed equa;l or 'C'
+
       ecalculate = []; //空にする
+      _tmpValue = [];
 
     } else {
+
       _tmpValue.push(value);
-      console.log('push ' + value);
+
+      //console.log('push ' + value);
     }
 
     this.setState({
@@ -74,13 +80,18 @@ var KeySample = React.createClass({
 
         num = array[0] * 1;
         sum = array[2] * 1;
+
         // num = parseInt(array[0]);
         // sum = parseInt(array[2]);
+
+        // console.log('whats else num ' + num);
+        // console.log('whats else sum ' + sum);
+
       }
-    }
+    }// end of for!!!!
 
-    //parseInt(num);
-
+    console.log('whats else num ' + num);
+    console.log('whats else sum ' + sum);
 
     // let's sum
     // 3+6=9 -> this is wrong!!!!!!!!
@@ -89,7 +100,7 @@ var KeySample = React.createClass({
     // sum =  入力された値 + 入力された値 
     // currently, sum is 0, also num is 0. OMG
 
-    //console.log(flag);
+    //var aclear;
 
     if(flag == '+') {
       sum = num + sum;
@@ -104,15 +115,21 @@ var KeySample = React.createClass({
       sum = num / sum;
     }
     else {
-      aclear(_tmpValue);
-      console.log('whats else ' + sum);　//sumがでない
+      aclear(_tmpValue);// <- this is ERROR!!!!!!!!
+      console.log('whats else ' + sum);
     }
 
+    console.log('sum', sum);
 
-
-
-
+    // if sum is 8
+    // _tmpValue = [8]
+    _tmpValue = [sum];
+    this.setState({
+      text: _tmpValue.join('')
+    });
+    
   },
+
   render() {
     var _this = this;
 
