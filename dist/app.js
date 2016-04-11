@@ -4,13 +4,16 @@ var ReactDom = require('react-dom');
 
 // initialized the varriable
 // array
-// 命名規則を第三者がわかるもの
-// 変数名を宣言するのはStateの中
-var _tmpValue = []; //溜め込んでる場所という意味にする（_tmpValue）
+// ����Ҏ�t�������ߤ��狼������
+// �����������Ԥ����Τ�State����
+var _tmpValue = []; //�����z���Ǥ������Ȥ�����ζ�ˤ��루_tmpValue��
 // initialized the varriable
 // this is number of sum. :]
 var sum = 0;
 var num = 0;
+// ��Ӌ��Ӌ�㤬�Ф��줿�����Єe
+// true: -> Ӌ�㤷���� false: -> Ӌ�㤷�Ƥʤ�
+var isSum = false;
 
 var KeySample = React.createClass({displayName: "KeySample",
   getInitialState() {
@@ -22,24 +25,78 @@ var KeySample = React.createClass({displayName: "KeySample",
   onClick(value) {
     //console.log(this.state);
     //console.log('value is ' + value);
+    var _length = _tmpValue.length;
 
     // save the data which pressed the button
     if (value == '='){
-
+      // first-click
+      if(_length <= 0) {
+        return;
+      } else {
+        // �Τ�����tmpValue�����֤����äƤ�
+        // ex: 4/2�򤷤������� 4/���Ȥ���Ѻ���줿���ϺΤ⤷�ʤ��褦�ˤ��롣
+        if(_tmpValue[_length - 1] === '+' || _tmpValue[_length - 1] === '-' || _tmpValue[_length - 1] === '*' || _tmpValue[_length - 1] === '/') {
+          return;
+        }
+      }
       //console.log('whats value ' + value);
-      this.calculate(); //計算してるところを呼ぶ
+      this.calculate(); //Ӌ�㤷�Ƥ��Ȥ���������
 
     } else if (value == 'C') { // reset the array, cause pressed equa;l or 'C'
 
-      ecalculate = []; //空にする
-      _tmpValue = []; //表示されてる部分も空にする
-
-    } else {
-
-      _tmpValue.push(value); //inputの中にクリックされた値を送る
+      ecalculate = []; //�դˤ���
+      _tmpValue = []; //��ʾ�����Ƥ벿�֤��դˤ���
+      isSum = false;// ��Ӌ���Ƥʤ����Ȥˤ���
+      sum = 0;
 
       this.setState({
-        text: _tmpValue.join('') //記号の場合そのままtextに追加
+        text: '' //ӛ�ŤΈ��Ϥ��Τޤ�text��׷��
+      });
+
+    } else {
+      // ���֤� +, -, * or /�����äƤ��롣
+      // �ʤΤǡ��⤷�����Τ����äƤʤ��r�������Εr�������������ʤ��Τ⤷�ʤ��I������Ҫ:)
+      console.log('click', _tmpValue);
+
+      // first-click
+      if(_length <= 0) {
+        // ������+, -, * or /�������å����줿�Ȥ�
+        if(value === '+' || value == '-' || value === '*' || value == '/') {
+            
+          // �����ǤϤޤ���Ӌ���g�Ф����Ƥʤ��Τ�
+          if(!isSum) {
+            // �ʤˤ⤳�����Ϥ����ʤ��no-more...;) 
+            return;
+          } else {
+            // �����Ϻ�Ӌ��Ӌ�㤬�g�Ф����Ƥ��Τ�
+            // tampValue��sum����Ӌ�νY���������뤷�Ƥ���
+            _tmpValue = [sum];
+          }
+        }
+      } else if(_length >= 1) {
+        // �������Ǥ����äƤ��r�Ǥ��ġ�00��'0'���B�A���ʤ��褦��
+        if(value === 0) {
+          return;
+        }
+
+        // ���FѺ���줿�Τ�ӛ�ŤǤ���һ��ǰ��Ѻ���줿�Τ�ӛ�Ť����Єe
+        // ԓ���������ϤϺΤ⤷�ʤ�
+        
+        // ���F��Ѻ���줿����ӛ�Ťʤ�
+        if(value === '+' || value === '-' || value === '*' || value === '/') {
+          // һ��ǰ�΂���ӛ�Ťʤ�
+          if(_tmpValue[_length - 1] === '+' || _tmpValue[_length - 1] === '-' || _tmpValue[_length - 1] === '*' || _tmpValue[_length - 1] === '/') {
+            return;
+          }
+        }
+        
+        isSum = false;// ��Ӌ���Ƥʤ����Ȥˤ���
+      } 
+
+      _tmpValue.push(value); //input���Ф˥����å����줿�����ͤ�
+
+      this.setState({
+        text: _tmpValue.join('') //ӛ�ŤΈ��Ϥ��Τޤ�text��׷��
       });
 
       //console.log('push ' + value);
@@ -47,14 +104,15 @@ var KeySample = React.createClass({displayName: "KeySample",
     //console.log(this.state.text);
     //console.log(event.target);
   },
-  calculate() { //計算するところ↓
+  // =Ѻ���줿�Ȥ���Ӌ�㤵����
+  calculate() { //Ӌ�㤹���Ȥ�����
   
     var flag;
 
-    var str = _tmpValue.join("");//_tmpValue文字列かした値が入ってる（str）
-    //配列＋メソット＋引数
+    var str = _tmpValue.join("");//_tmpValue�����л������������äƤ루str��
+    //���У��᥽�åȣ�����
 
-    var array = str.split(/(\+|\-|\*|\/)/); //
+    var array = str.split(/(\+|\-|\*|\/)/); 
 
     for (var v of array) {
       //console.log('v is ' + v);
@@ -98,23 +156,22 @@ var KeySample = React.createClass({displayName: "KeySample",
     // 3+6=9 -> this is wrong!!!!!!!!
     // this displayed just 9
 
-    // sum =  入力された値 + 入力された値 
+    // sum =  �������줿�� + �������줿�� 
     // currently, sum is 0, also num is 0. OMG
 
     //var aclear;
 
     if(flag == '+') {
       sum = num + sum;
-    }
-    else if(flag == '-') {
+    } else if(flag == '-') {
       sum = num - sum;
-    }
-    else if(flag == '*') {
+    } else if(flag == '*') {
       sum = num * sum;
-    }
-    else if(flag == '/') {
+    } else if(flag == '/') {
       sum = num / sum;
     }
+    // Ӌ�㤬�g�Ф��줿�Τ�true�ˡ�
+    isSum = true;
 
     /*else {
       aclear(_tmpValue);// <- this is ERROR!!!!!!!!
@@ -125,9 +182,10 @@ var KeySample = React.createClass({displayName: "KeySample",
 
     // if sum is 8
     // _tmpValue = [8]
-    _tmpValue = []; //数字を押されたら空にする
+    _tmpValue = []; //���֤�Ѻ���줿���դˤ���
+    
     this.setState({
-      text: sum // 計算結果を表示　
+      text: sum // Ӌ���Y������ʾ��
     });
 
 

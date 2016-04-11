@@ -3,13 +3,16 @@ var ReactDom = require('react-dom');
 
 // initialized the varriable
 // array
-// å‘½åè¦å‰‡ã‚’ç¬¬ä¸‰è€…ãŒã‚ã‹ã‚‹ã‚‚ã®
-// å¤‰æ•°åã‚’å®£è¨€ã™ã‚‹ã®ã¯Stateã®ä¸­
-var _tmpValue = []; //æºœã‚è¾¼ã‚“ã§ã‚‹å ´æ‰€ã¨ã„ã†æ„å‘³ã«ã™ã‚‹ï¼ˆ_tmpValueï¼‰
+// ÃüÃûÒ„t¤òµÚÈıÕß¤¬¤ï¤«¤ë¤â¤Î
+// ‰äÊıÃû¤òĞûÑÔ¤¹¤ë¤Î¤ÏState¤ÎÖĞ
+var _tmpValue = []; //Áï¤áŞz¤ó¤Ç¤ëˆöËù¤È¤¤¤¦ÒâÎ¶¤Ë¤¹¤ë£¨_tmpValue£©
 // initialized the varriable
 // this is number of sum. :]
 var sum = 0;
 var num = 0;
+// ºÏÓ‹¤ÎÓ‹Ëã¤¬ĞĞ¤ï¤ì¤¿¤«¤ÎÅĞ„e
+// true: -> Ó‹Ëã¤·¤¿¡£ false: -> Ó‹Ëã¤·¤Æ¤Ê¤¤
+var isSum = false;
 
 var KeySample = React.createClass({
   getInitialState() {
@@ -21,24 +24,78 @@ var KeySample = React.createClass({
   onClick(value) {
     //console.log(this.state);
     //console.log('value is ' + value);
+    var _length = _tmpValue.length;
 
     // save the data which pressed the button
     if (value == '='){
-
+      // first-click
+      if(_length <= 0) {
+        return;
+      } else {
+        // ºÎ¤«¤·¤étmpValue¤ËÊı×Ö¤¬Èë¤Ã¤Æ¤ë
+        // ex: 4/2¤ò¤·¤¿¤¤¤±¤É 4/£½¤È¤«¤òÑº¤µ¤ì¤¿ˆöºÏºÎ¤â¤·¤Ê¤¤¤è¤¦¤Ë¤¹¤ë¡£
+        if(_tmpValue[_length - 1] === '+' || _tmpValue[_length - 1] === '-' || _tmpValue[_length - 1] === '*' || _tmpValue[_length - 1] === '/') {
+          return;
+        }
+      }
       //console.log('whats value ' + value);
-      this.calculate(); //è¨ˆç®—ã—ã¦ã‚‹ã¨ã“ã‚ã‚’å‘¼ã¶
+      this.calculate(); //Ó‹Ëã¤·¤Æ¤ë¤È¤³¤í¤òºô¤Ö
 
     } else if (value == 'C') { // reset the array, cause pressed equa;l or 'C'
 
-      ecalculate = []; //ç©ºã«ã™ã‚‹
-      _tmpValue = []; //è¡¨ç¤ºã•ã‚Œã¦ã‚‹éƒ¨åˆ†ã‚‚ç©ºã«ã™ã‚‹
-
-    } else {
-
-      _tmpValue.push(value); //inputã®ä¸­ã«ã‚¯ãƒªãƒƒã‚¯ã•ã‚ŒãŸå€¤ã‚’é€ã‚‹
+      ecalculate = []; //¿Õ¤Ë¤¹¤ë
+      _tmpValue = []; //±íÊ¾¤µ¤ì¤Æ¤ë²¿·Ö¤â¿Õ¤Ë¤¹¤ë
+      isSum = false;// ºÏÓ‹¤·¤Æ¤Ê¤¤¤³¤È¤Ë¤¹¤ë
+      sum = 0;
 
       this.setState({
-        text: _tmpValue.join('') //è¨˜å·ã®å ´åˆãã®ã¾ã¾textã«è¿½åŠ 
+        text: '' //Ó›ºÅ¤ÎˆöºÏ¤½¤Î¤Ş¤Ştext¤Ë×·¼Ó
+      });
+
+    } else {
+      // Êı×Ö¤« +, -, * or /¤¬Èë¤Ã¤Æ¤¯¤ë¡£
+      // ¤Ê¤Î¤Ç¡¢¤â¤·‚¤¬ºÎ¤âÈë¤Ã¤Æ¤Ê¤¤•r£¨×î³õ¤Î•r£©¤ËÊı×ÖÒÔÍâ¤Ê¤éºÎ¤â¤·¤Ê¤¤„IÀí¤¬±ØÒª:)
+      console.log('click', _tmpValue);
+
+      // first-click
+      if(_length <= 0) {
+        // ¤³¤³¤Ï+, -, * or /¤¬¥¯¥ê¥Ã¥¯¤µ¤ì¤¿¤È¤­
+        if(value === '+' || value == '-' || value === '*' || value == '/') {
+            
+          // ¤³¤³¤Ç¤Ï¤Ş¤ÀºÏÓ‹¤¬ŒgĞĞ¤µ¤ì¤Æ¤Ê¤¤¤Î¤Ç
+          if(!isSum) {
+            // ¤Ê¤Ë¤â¤³¤ìÒÔÉÏ¤µ¤»¤Ê¤¤¤ï¡£no-more...;) 
+            return;
+          } else {
+            // ¤³¤³¤ÏºÏÓ‹¤ÎÓ‹Ëã¤¬ŒgĞĞ¤µ¤ì¤Æ¤ë¤Î¤Ç
+            // tampValue¤Ësum£¨ºÏÓ‹¤Î½Y¹û£©¤ò´úÈë¤·¤Æ¤ª¤¯
+            _tmpValue = [sum];
+          }
+        }
+      } else if(_length >= 1) {
+        // ‚¤¬¤¹¤Ç¤ËÈë¤Ã¤Æ¤ë•r¤Ç¤«¤Ä¡¢00¤È'0'¤¬ßB¾A¤³¤Ê¤¤¤è¤¦¤Ë
+        if(value === 0) {
+          return;
+        }
+
+        // ½ñ¬FÑº¤µ¤ì¤¿¤Î¤¬Ó›ºÅ¤Ç¤«¤ÄÒ»‚€Ç°¤ËÑº¤µ¤ì¤¿¤Î¤¬Ó›ºÅ¤«¤ÎÅĞ„e
+        // Ô“µ±¤¹¤ëˆöºÏ¤ÏºÎ¤â¤·¤Ê¤¤
+        
+        // ½ñ¬FÔÚÑº¤µ¤ì¤¿‚¤¬Ó›ºÅ¤Ê¤é
+        if(value === '+' || value === '-' || value === '*' || value === '/') {
+          // Ò»‚€Ç°¤Î‚¤¬Ó›ºÅ¤Ê¤é
+          if(_tmpValue[_length - 1] === '+' || _tmpValue[_length - 1] === '-' || _tmpValue[_length - 1] === '*' || _tmpValue[_length - 1] === '/') {
+            return;
+          }
+        }
+        
+        isSum = false;// ºÏÓ‹¤·¤Æ¤Ê¤¤¤³¤È¤Ë¤¹¤ë
+      } 
+
+      _tmpValue.push(value); //input¤ÎÖĞ¤Ë¥¯¥ê¥Ã¥¯¤µ¤ì¤¿‚¤òËÍ¤ë
+
+      this.setState({
+        text: _tmpValue.join('') //Ó›ºÅ¤ÎˆöºÏ¤½¤Î¤Ş¤Ştext¤Ë×·¼Ó
       });
 
       //console.log('push ' + value);
@@ -46,14 +103,15 @@ var KeySample = React.createClass({
     //console.log(this.state.text);
     //console.log(event.target);
   },
-  calculate() { //è¨ˆç®—ã™ã‚‹ã¨ã“ã‚â†“
+  // =Ñº¤µ¤ì¤¿¤È¤­¤ËÓ‹Ëã¤µ¤»¤ë
+  calculate() { //Ó‹Ëã¤¹¤ë¤È¤³¤í¡ı
   
     var flag;
 
-    var str = _tmpValue.join("");//_tmpValueæ–‡å­—åˆ—ã‹ã—ãŸå€¤ãŒå…¥ã£ã¦ã‚‹ï¼ˆstrï¼‰
-    //é…åˆ—ï¼‹ãƒ¡ã‚½ãƒƒãƒˆï¼‹å¼•æ•°
+    var str = _tmpValue.join("");//_tmpValueÎÄ×ÖÁĞ»¯¤·¤¿‚¤¬Èë¤Ã¤Æ¤ë£¨str£©
+    //ÅäÁĞ£«¥á¥½¥Ã¥È£«ÒıÊı
 
-    var array = str.split(/(\+|\-|\*|\/)/); //
+    var array = str.split(/(\+|\-|\*|\/)/); 
 
     for (var v of array) {
       //console.log('v is ' + v);
@@ -97,23 +155,22 @@ var KeySample = React.createClass({
     // 3+6=9 -> this is wrong!!!!!!!!
     // this displayed just 9
 
-    // sum =  å…¥åŠ›ã•ã‚ŒãŸå€¤ + å…¥åŠ›ã•ã‚ŒãŸå€¤ 
+    // sum =  ÈëÁ¦¤µ¤ì¤¿‚ + ÈëÁ¦¤µ¤ì¤¿‚ 
     // currently, sum is 0, also num is 0. OMG
 
     //var aclear;
 
     if(flag == '+') {
       sum = num + sum;
-    }
-    else if(flag == '-') {
+    } else if(flag == '-') {
       sum = num - sum;
-    }
-    else if(flag == '*') {
+    } else if(flag == '*') {
       sum = num * sum;
-    }
-    else if(flag == '/') {
+    } else if(flag == '/') {
       sum = num / sum;
     }
+    // Ó‹Ëã¤¬ŒgĞĞ¤µ¤ì¤¿¤Î¤Çtrue¤Ë¡£
+    isSum = true;
 
     /*else {
       aclear(_tmpValue);// <- this is ERROR!!!!!!!!
@@ -124,9 +181,10 @@ var KeySample = React.createClass({
 
     // if sum is 8
     // _tmpValue = [8]
-    _tmpValue = []; //æ•°å­—ã‚’æŠ¼ã•ã‚ŒãŸã‚‰ç©ºã«ã™ã‚‹
+    _tmpValue = []; //Êı×Ö¤òÑº¤µ¤ì¤¿¤é¿Õ¤Ë¤¹¤ë
+    
     this.setState({
-      text: sum // è¨ˆç®—çµæœã‚’è¡¨ç¤ºã€€
+      text: sum // Ó‹Ëã½Y¹û¤ò±íÊ¾¡¡
     });
 
 
