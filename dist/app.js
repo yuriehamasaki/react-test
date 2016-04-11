@@ -57,7 +57,6 @@ var Calculator = React.createClass({displayName: "Calculator",
         text: repository.join('')
       });
     }
-    console.log('koko' + this.state.text);
   },
   calculate() {
     var symbol;
