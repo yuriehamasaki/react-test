@@ -14,7 +14,9 @@ var browserSync = require('browser-sync');
 gulp.task('browserify', function(){
   var b = browserify({
     entries: ['./js/main.js'],
-    transform: [reactify]
+    transform: [
+      ["reactify", {"harmony": true} ]
+    ]
   });
   return b.bundle()
     .pipe(source('app.js'))
@@ -39,13 +41,3 @@ gulp.task('compass',function(){
 });
 
 gulp.task("default",['watch', 'browserSync']);
-
-
-
-
-
-
-
-
-
-

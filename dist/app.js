@@ -3,115 +3,116 @@ var React = require('react');
 var ReactDom = require('react-dom');
 
 var Calculator = React.createClass({displayName: "Calculator",
-  getInitialState(){
-    repository = [];
-    firstBox = 0;
-    secBox = 0;
-    totalCount = false;
+  getInitialState:function(){
     return{
-      buttons: [1, 2, 3, "+",4, 5, 6,"-", 7, 8, 9, "*", 0, "C",  "/", "="],
-      text: [].join('')
+      buttons: [1, 2, 3, '+',4, 5, 6,'-', 6, 8, 9, '*', 0, 'C',  '/', '='],
+      text: '',
+      displayValue: [],
+      firstBox: 0,
+      secBox: 0,
+      totalCount: false
     };
   },
-  onClick(value){
-    var strLength = repository.length;
+  onClick:function(value){
+    var displayValueLength = this.state.displayValue.length;
     if (value == '=') {
-      if (strLength <= 0){
+      if (displayValueLength <= 0){
         return;
       } else {
-        if (repository[strLength - 1] === '+' || repository[strLength - 1] === '-' || repository[strLength - 1] === '*' || repository[strLength - 1] === '/'){
+        if (this.state.displayValue[displayValueLength - 1] === '+' || this.state.displayValue[displayValueLength - 1] === '-' || this.state.displayValue[displayValueLength - 1] === '*' || this.state.displayValue[displayValueLength - 1] === '/'){
           return;
         }
       }
       this.calculate();
     } else if (value == 'C') {
       calculate = [];
-      repository = [];
-      totalCount = false;
-      firstBox = 0;
+      this.state.displayValue = [];
+      this.state.totalCount = false;
+      this.state.firstBox = 0;
       this.setState({
+        totalCount: false,
         text: ''
       });
     } else {
-      if (strLength <= 0) {
+      if (displayValueLength <= 0) {
         if (value === '+' || value === '-' || value === '*'|| value === '/') {
-          if (!totalCount) {
+          if (!this.state.totalCount) {
             return;
           } else {
-            repository = [firstBox];
+            this.state.displayValue = [this.state.firstBox];
           }
         }
-      } else if (strLength >= 1){
+      } else if (displayValueLength >= 1){
         if (value === 0) {
           return;
         }
         if (value === '+' || value === '-' || value === '*' || value === '/'){
-          if (repository[strLength - 1] === '+' || repository[strLength - 1] === '-' || repository[strLength - 1] === '*' || repository[strLength - 1] === '/'){
+          if (this.state.displayValue[displayValueLength - 1] === '+' || this.state.displayValue[displayValueLength - 1] === '-' || this.state.displayValue[displayValueLength - 1] === '*' || this.state.displayValue[displayValueLength - 1] === '/'){
             return;
           }
         }
-        totalCount = false;
+        this.state.totalCount = false;
       }
-      repository.push(value);
+      this.state.displayValue.push(value);
       this.setState({
-        text: repository.join('')
+        text: this.state.displayValue.join('')
       });
     }
   },
-  calculate() {
+  calculate:function() {
     var symbol;
-    var repoStr = repository.join("");
-    var array = repoStr.split(/(\+|\-|\*|\/)/);
+    var  displayValueCharacter = this.state.displayValue.join("");
+    var array = displayValueCharacter.split(/(\+|\-|\*|\/)/);
 
     for (var character of array) {
-      if(character == '+'){
+      if(character === '+'){
         symbol = character;
-      } else if (character == '-'){
+      } else if (character === '-'){
         symbol = character;
-      } else if (character == '*'){
+      } else if (character === '*'){
         symbol = character;
-      } else if (character == '/'){
+      } else if (character === '/'){
         symbol = character;
-      } else if (character == '='){
+      } else if (character === '='){
         symbol = character;
       } else{
-        firstBox  = parseInt(array[0]);
-        secBox    = parseInt(array[2]);
+        this.state.firstBox  = parseInt(array[0]);
+        this.state.secBox    = parseInt(array[2]);
       }
     }
 
-    if(symbol == '+') {
-      secBox = firstBox + secBox;
-    } else if (symbol == '-') {
-      secBox = firstBox - secBox;
-    } else if (symbol == '*') {
-      secBox = firstBox * secBox;
-    } else if (symbol == '/') {
-      secBox = firstBox / secBox;
+    if(symbol === '+') {
+      this.state.secBox = this.state.firstBox + this.state.secBox;
+    } else if (symbol === '-') {
+      this.state.secBox = this.state.firstBox - this.state.secBox;
+    } else if (symbol === '*') {
+      this.state.secBox = this.state.firstBox * this.state.secBox;
+    } else if (symbol === '/') {
+      this.state.secBox = this.state.firstBox / this.state.secBox;
     }
 
-    totalCount = true;
+    this.state.totalCount = true;
 
-    repository = [];
+    this.state.displayValue = [];
     this.setState({
-      text: secBox
+      text: this.state.secBox
     });
   },
-  render(){
+  render:function(){
     var self = this;
-      var buttonElements = this.state.buttons.map(function(button, i) {
-          return (
-            React.createElement("button", {key: i, onClick: function() {
-                self.onClick(button);
-            }}, button)
-          );
-      });
+    var buttonElements = this.state.buttons.map(function(button, i) {
       return (
-          React.createElement("div", null, 
-            React.createElement("input", {type: "text", name: "", value: this.state.text, readOnly: true}), 
-            React.createElement("div", {id: "keyboard"}, buttonElements)
-          )
+        React.createElement("button", {key: i, onClick: function() {
+          self.onClick(button);
+        }}, button)
       );
+    });
+    return (
+      React.createElement("div", null, 
+        React.createElement("input", {type: "text", name: "", value: this.state.text, readOnly: true}), 
+        React.createElement("div", {id: "keyboard"}, buttonElements)
+      )
+    );
   }
 });
 
