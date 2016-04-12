@@ -10,25 +10,25 @@ body {
 
 #calculator_wrap{
 	width: 600px;
-    margin: 30px auto;
+  margin: 30px auto;
 }
 input[type="text"]{
 	font-size: 33px;
 	width: 575px;
-    margin: 0 auto 15px; 
-    padding: 5px;
-    display: block;
+  margin: 0 auto 15px; 
+  padding: 5px;
+  display: block;
 }
 #keyboard button{
 	font-size: 25px;
 	width: 23%;
-    padding: 0;
-    margin: 0 6px 10px 6px;
-    border: 1px solid #ccc;
-    background-color: #fff;
-    border-radius: 10px;
+  padding: 0;
+  margin: 0 6px 10px 6px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  border-radius: 10px;
 }
 #keyboard button:hover{
-    background-color: #ccc;
-    transition: background-color 0.5s;
+  background-color: #ccc;
+  transition: background-color 0.5s;
 }

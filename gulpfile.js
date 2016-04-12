@@ -1,14 +1,14 @@
-var gulp        = require('gulp'),
-    react       = require('gulp-react'),
-    plumber     = require('gulp-plumber'),
-    uglify      = require("gulp-uglify"),
-    browserify  = require('browserify'),
-    babelify    = require('babelify'),
-    reactify    = require('reactify'),
-    source      = require('vinyl-source-stream'),
-    compass     = require('gulp-compass'),
-    sass        = require("gulp-sass"),
-    browserSync = require('browser-sync');
+var gulp        = require('gulp');
+var react       = require('gulp-react');
+var plumber     = require('gulp-plumber');
+var uglify      = require("gulp-uglify");
+var browserify  = require('browserify');
+var babelify    = require('babelify');
+var reactify    = require('reactify');
+var source      = require('vinyl-source-stream');
+var compass     = require('gulp-compass');
+var sass        = require("gulp-sass");
+var browserSync = require('browser-sync');
  
 // トランスパイル
 gulp.task('browserify', function(){
@@ -27,7 +27,6 @@ gulp.task('browserSync',function(){
     });
 });
 
-// watch 
 gulp.task('watch',function(){
     gulp.watch('./js/main.js', ['browserify']);
 });
@@ -39,20 +38,6 @@ gulp.task('compass',function(){
         }));
 });
 
-/*gulp.task('sass', function(){
-  gulp.src('./scss/*.scss')
-    .pipe(sass())
-    .pipe(gulp.dest('./css'));
-});*/
-
-
-// gulp.task('watch',function(){
-//     gulp.watch(['**/*.+(html|inc|css|png|jpg|gif)','js/**/*.js'],function(){
-//         browserSync.reload();
-//     });
-//     gulp.watch('sass/**/*.scss',['compass']);
-// });
- 
 gulp.task("default",['watch', 'browserSync']);
 
 

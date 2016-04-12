@@ -8,8 +8,8 @@ var Calculator = React.createClass({
     secBox = 0;
     totalCount = false;
     return{
-      buttons: [1, 2, 3, "+",4, 5, 6,"-", 7, 8, 9, "*", 0, "C",  "/", "="],
-      text: [].join('')
+      buttons: [1, 2, 3, '+',4, 5, 6,'-', 6, 8, 9, '*', 0, 'C',  '/', '='],
+      text: ¡®¡¯
     };
   },
   onClick(value){
@@ -29,6 +29,7 @@ var Calculator = React.createClass({
       totalCount = false;
       firstBox = 0;
       this.setState({
+        totalCount: false,
         text: ''
       });
     } else {
@@ -63,15 +64,15 @@ var Calculator = React.createClass({
     var array = repoStr.split(/(\+|\-|\*|\/)/);
 
     for (var character of array) {
-      if(character == '+'){
+      if(character === '+'){
         symbol = character;
-      } else if (character == '-'){
+      } else if (character === '-'){
         symbol = character;
-      } else if (character == '*'){
+      } else if (character === '*'){
         symbol = character;
-      } else if (character == '/'){
+      } else if (character === '/'){
         symbol = character;
-      } else if (character == '='){
+      } else if (character === '='){
         symbol = character;
       } else{
         firstBox  = parseInt(array[0]);
@@ -79,13 +80,13 @@ var Calculator = React.createClass({
       }
     }
 
-    if(symbol == '+') {
+    if(symbol === '+') {
       secBox = firstBox + secBox;
-    } else if (symbol == '-') {
+    } else if (symbol === '-') {
       secBox = firstBox - secBox;
-    } else if (symbol == '*') {
+    } else if (symbol === '*') {
       secBox = firstBox * secBox;
-    } else if (symbol == '/') {
+    } else if (symbol === '/') {
       secBox = firstBox / secBox;
     }
 
